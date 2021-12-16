@@ -91,17 +91,19 @@ int main(int argc, char **argv) {
         output_dir.push_back('/');
 
     std::vector<uint32_t> path_lens{ 3, 5, 10, 15, 20 };
-    std::vector<uint32_t> iterations_nums{ 100, 500, 1000, 5000, 10000, 50000, 100000 };
+    std::vector<uint32_t> iterations_nums{ 100, 500, 1000, 5000, 10000 };
 
     graph graph;
     
     read_graph(graph, links_path, false);
     read_graph(graph, groups_test, true);
     
+    stopwatch total("total");
+
     for(auto path_len : path_lens)
         for(auto iterations : iterations_nums){
             stopwatch s(fmt::format("random katz with {} iterations and path len {}", iterations, path_len));
-            random_katz rk;
+            random_katz rk(iterations, path_len);
             rk(graph, output_dir + fmt::format("recs_{}_{}.bin", path_len, iterations));
             fmt::print("\n");
         }
